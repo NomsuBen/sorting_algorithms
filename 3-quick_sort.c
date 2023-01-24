@@ -1,34 +1,79 @@
 #include "sort.h"
+#include <stdio.h>
 
 /**
-  * my_quick_sort - recursively sort the array using divid and conquer algor
-  * @array: pointer to the array
-  * @size: size of the array
-  * @start: the start index of the array
-  * @end: the end index of the array
-  * Return: void
-  */
-void my_quick_sort(int *array, size_t size, int start, int end)
+ * partition - finds the partition for the quicksort using the Lomuto scheme
+ * @array: array to sort
+ * @lo: lowest index of the partition to sort
+ * @hi: highest index of the partition to sort
+ * @size: size of the array
+ *
+ * Return: index of the partition
+ */
+size_t partition(int *array, ssize_t lo, ssize_t hi, size_t size)
 {
-	int partIndex;
+	ssize_t i, j;
+	int swap, pivot;
 
-	if (start < end)
+	pivot = array[hi];
+	i = lo - 1;
+	for (j = lo; j < hi; j++)
 	{
-		partIndex = partition(array, size, start, end);
-		my_quick_sort(array, size, start, partIndex - 1);
-		my_quick_sort(array, size, partIndex + 1, end);
+		if (array[j] < pivot)
+		{
+			i++;
+			if (i != j)
+			{
+				swap = array[i];
+				array[i] = array[j];
+				array[j] = swap;
+				print_array(array, size);
+			}
+		}
+	}
+	if (array[hi] < array[i + 1])
+	{
+		swap = array[i + 1];
+		array[i + 1] = array[hi];
+		array[hi] = swap;
+		print_array(array, size);
+	}
+	return (i + 1);
+}
+
+/**
+ * quicksort - sorts a partition of an array of integers
+ * @array: array to sort
+ * @lo: lowest index of the partition to sort
+ * @hi: highest index of the partition to sort
+ * @size: size of the array
+ *
+ * Return: void
+ */
+void quicksort(int *array, ssize_t lo, ssize_t hi, size_t size)
+{
+	ssize_t pivot;
+
+	if (lo < hi)
+	{
+		pivot = partition(array, lo, hi, size);
+		quicksort(array, lo, pivot - 1, size);
+		quicksort(array, pivot + 1, hi, size);
+
 	}
 }
 
 /**
-  * quick_sort - calls the my_sort function; sorts array using quicksort
-  * @array: the pointer to the array to be sorted
-  * @size: The size of elements in the array
-  * Return: void
-  */
+ * quick_sort - sorts an array of integers in ascending order using the
+ * Quick sort algorithm
+ * @array: The array to sort
+ * @size: The size of the array
+ *
+ * Return: void
+ */
 void quick_sort(int *array, size_t size)
 {
-	if (array ==  NULL || size < 2)
+	if (array == NULL || size < 2)
 		return;
-	my_quick_sort(array, size, 0, size - 1);
+	quicksort(array, 0, size - 1, size);
 }
